@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+type Config struct {
+	AppId     string
+	AppSecret string
+	Debug     bool
+}
+
 type Broker struct {
 	appid     string
 	appsecret string
@@ -16,22 +22,21 @@ type Broker struct {
 	client    *http.Client
 }
 
-func New(id, secret string) Broker {
-	return Broker{
-		appid:     id,
-		appsecret: secret,
+func New(c Config) (Broker, error) {
+	b := Broker{
+		appid:     c.AppId,
+		appsecret: c.AppSecret,
+		debug:     c.Debug,
 		client: &http.Client{
 			Timeout: 10 * time.Second,
 		},
 	}
+
+	return b, nil
 }
 
 func (b Broker) IsDebug() bool {
 	return b.debug
-}
-
-func (b *Broker) Debug() {
-	b.debug = true
 }
 
 func (b Broker) baseApi() string {

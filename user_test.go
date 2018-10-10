@@ -8,8 +8,13 @@ import (
 )
 
 func TestRegister(t *testing.T) {
-	b := New("fox223eef78c1e4bb1c", "2b92cdcf529931d80410d2a5919d9199")
-	b.Debug()
+	c := Config{
+		AppId:     "fox223eef78c1e4bb1c",
+		AppSecret: "2b92cdcf529931d80410d2a5919d9199",
+		Debug:     true,
+	}
+
+	b, _ := New(c)
 
 	ctx := context.TODO()
 	resp, err := b.Register(ctx, "yiplee", "yiplee", "https://resources.kumiclub.com/1fi7Dk/52c5c839a5f9ed6ae0f7f5a153607571")
