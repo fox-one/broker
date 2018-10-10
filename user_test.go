@@ -11,7 +11,7 @@ func TestRegister(t *testing.T) {
 	c := Config{
 		AppId:     "fox223eef78c1e4bb1c",
 		AppSecret: "2b92cdcf529931d80410d2a5919d9199",
-		Debug:     true,
+		Develop:   true,
 	}
 
 	b, _ := New(c)

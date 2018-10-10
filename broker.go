@@ -12,13 +12,13 @@ import (
 type Config struct {
 	AppId     string
 	AppSecret string
-	Debug     bool
+	Develop   bool
 }
 
 type Broker struct {
 	appid     string
 	appsecret string
-	debug     bool
+	develop   bool
 	client    *http.Client
 }
 
@@ -26,7 +26,7 @@ func New(c Config) (Broker, error) {
 	b := Broker{
 		appid:     c.AppId,
 		appsecret: c.AppSecret,
-		debug:     c.Debug,
+		develop:   c.Develop,
 		client: &http.Client{
 			Timeout: 10 * time.Second,
 		},
@@ -36,11 +36,11 @@ func New(c Config) (Broker, error) {
 }
 
 func (b Broker) IsDebug() bool {
-	return b.debug
+	return b.develop
 }
 
 func (b Broker) baseApi() string {
-	if b.debug {
+	if b.develop {
 		return "https://dev.fox.one/api"
 	}
 
