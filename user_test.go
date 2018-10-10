@@ -22,5 +22,13 @@ func TestRegister(t *testing.T) {
 		assert.Len(t, resp.User.Id, 36)
 		assert.NotEmpty(t, resp.Token)
 		assert.NotZero(t, resp.Expire)
+
+		resp, err = b.Login(ctx, resp.User.Id)
+
+		if assert.Nil(t, err) {
+			assert.Len(t, resp.User.Id, 36)
+			assert.NotEmpty(t, resp.Token)
+			assert.NotZero(t, resp.Expire)
+		}
 	}
 }

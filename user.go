@@ -41,3 +41,22 @@ func (b Broker) Register(ctx context.Context, traceId, name, avatar string) (*Us
 
 	return userResp, nil
 }
+
+func (b Broker) Login(ctx context.Context, foxId string) (*UserResponse, error) {
+	resp, err := b.do(ctx, "POST", "broker/login", "fox_id", foxId)
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := resp.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	userResp := &UserResponse{}
+	if err := json.Unmarshal(data, userResp); err != nil {
+		return nil, err
+	}
+
+	return userResp, nil
+}
