@@ -3,6 +3,7 @@ package broker
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 )
 
 type Asset struct {
@@ -23,14 +24,14 @@ type SnapshotUser struct {
 }
 
 type Snapshot struct {
-	SnapshotId  string  `json:"snapshotId"`
-	TraceId     string  `json:"traceId"`
-	UserId      string  `json:"userId"`
-	CreatedAt   int64   `json:"createdAt"`
-	Source      string  `json:"source"`
-	Amount      float64 `json:"amount"`
-	InsideMixin bool    `json:"insideMixin"`
-	Memo        string  `json:"memo"`
+	SnapshotId  string `json:"snapshotId"`
+	TraceId     string `json:"traceId"`
+	UserId      string `json:"userId"`
+	CreatedAt   int64  `json:"createdAt"`
+	Source      string `json:"source"`
+	Amount      string `json:"amount"`
+	InsideMixin bool   `json:"insideMixin"`
+	Memo        string `json:"memo"`
 
 	Sender          string `json:"sender,omitempty"`
 	Receiver        string `json:"receiver,omitempty"`
@@ -47,6 +48,10 @@ type Snapshots []Snapshot
 type SnapshotResponse struct {
 	Pagination OffsetPagination `json:"pagination"`
 	Snapshots  Snapshots        `json:"snapshots"`
+}
+
+type SingleSnapshotResponse struct {
+	Snapshot Snapshot `json:"snapshot"`
 }
 
 func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor string, asc bool) (*SnapshotResponse, error) {
@@ -85,4 +90,24 @@ func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor strin
 	}
 
 	return snapResp, nil
+}
+
+func (b Broker) GetSnapshot(ctx context.Context, snapshotID string) (*Snapshot, error) {
+	resp, err := b.do(ctx, "GET", fmt.Sprintf("broker/snapshot/%s", snapshotID))
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := resp.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("%s\n", data)
+
+	sr := SingleSnapshotResponse{}
+	if err := json.Unmarshal(data, &sr); err != nil {
+		return nil, err
+	}
+
+	return &sr.Snapshot, nil
 }
