@@ -38,6 +38,7 @@ type Snapshot struct {
 	TransactionHash string `json:"transactionHash,omitempty"`
 
 	Asset    Asset        `json:"asset,omitempty"`
+	User     SnapshotUser `json:"user,omitempty"`
 	Opponent SnapshotUser `json:"opponent,omitempty"`
 
 	ExtraData map[string]interface{} `json:"extraData,omitempty"`
@@ -74,7 +75,7 @@ func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor strin
 		paras = append(paras, "order", "DESC")
 	}
 
-	resp, err := b.do(ctx, "POST", "broker/wallet/snapshots", paras...)
+	resp, err := b.do(ctx, "POST", "broker/snapshots", paras...)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +94,7 @@ func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor strin
 }
 
 func (b Broker) GetSnapshot(ctx context.Context, snapshotID string) (*Snapshot, error) {
-	resp, err := b.do(ctx, "GET", fmt.Sprintf("broker/snapshot/%s", snapshotID))
+	resp, err := b.do(ctx, "POST", fmt.Sprintf("broker/snapshot/%s", snapshotID))
 	if err != nil {
 		return nil, err
 	}
