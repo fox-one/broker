@@ -55,7 +55,7 @@ type SingleSnapshotResponse struct {
 	Snapshot Snapshot `json:"snapshot"`
 }
 
-func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor string, asc bool) (*SnapshotResponse, error) {
+func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor string, asc bool, limit int) (*SnapshotResponse, error) {
 	paras := []interface{}{}
 	if len(userId) > 0 {
 		paras = append(paras, "userId", userId)
@@ -73,6 +73,10 @@ func (b Broker) PullSnapshots(ctx context.Context, userId, assetId, cursor strin
 		paras = append(paras, "order", "ASC")
 	} else {
 		paras = append(paras, "order", "DESC")
+	}
+
+	if limit > 0 {
+		paras = append(paras, "limit", limit)
 	}
 
 	resp, err := b.do(ctx, "POST", "broker/snapshots", paras...)
